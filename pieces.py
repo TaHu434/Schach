@@ -61,6 +61,41 @@ class Piece:
         :return: Return numerical score between -infinity and +infinity. Greater values indicate better evaluation result (more favorable).
         """
         # TODO: Implement
+        value = 0
+        
+        if isinstance(self, Pawn):
+            value += 1
+        elif isinstance(self, Knight):
+            value += 3
+        elif isinstance(self, Bishop):
+            value += 4
+        elif isinstance(self, Rook):
+            value += 5
+        elif isinstance(self, Queen):
+            value += 9
+        elif isinstance(self, King):
+            value += 100
+
+        enemy_pieces = self.board.iterate_cells_with_pieces(not self.is_white())
+        reachable_position = self.get_reachable_cells()
+
+        for position in reachable_position:
+            for enemy_piece in enemy_pieces:
+                if enemy_piece.cell == position:
+                    if isinstance(enemy_piece, Pawn):
+                        value += 1
+                    elif isinstance(enemy_piece, Knight):
+                        value += 3
+                    elif isinstance(enemy_piece, Bishop):
+                        value += 4
+                    elif isinstance(enemy_piece, Rook):
+                        value += 5
+                    elif isinstance(enemy_piece, Queen):
+                        value += 9
+                    elif isinstance(enemy_piece, King):
+                        value += 100
+                    
+        return value
 
     def get_valid_cells(self):
         """

@@ -241,6 +241,13 @@ class Board(BoardBase):
         :type white: Boolean
         """
         # TODO: Implement
+        for row in range(len(self.cells)):
+            for col in range(len(self.cells[row])):
+                piece = self.get_cell((row, col))
+                
+                if piece:
+                    if piece.is_white() == white:
+                        yield piece
 
     def find_king(self, white):
         """
@@ -255,6 +262,12 @@ class Board(BoardBase):
         :return: The :py:class:'King': object of the given color or None if there is no King on the board.
         """
         # TODO: Implement
+        samecolor_pieces = self.iterate_cells_with_pieces(white)
+
+        for piece in samecolor_pieces:
+            if isinstance(piece, King):      #ist das der könig
+                return piece
+        return None
 
     def is_king_check(self, white):
         """
@@ -267,6 +280,17 @@ class Board(BoardBase):
         Iterate over each reachable cell and check if the kings cell is reachable. If yes, shortcut and return True right away.
         """
         # TODO: Implement
+        king = self.find_king(white)
+        opposing_pieces = self.iterate_cells_with_pieces(not white)
+
+        for piece in opposing_pieces:
+            piece_move = piece.get_reachable_cells()
+
+            for cell in piece_move:
+                if king == self.get_cell(cell):
+                    return True
+        return False
+            
 
     def evaluate(self):
         """
@@ -280,6 +304,21 @@ class Board(BoardBase):
         """
         # TODO: Implement
         score = 0.0
+        white_pieces = self.iterate_cells_with_pieces(white = True)
+        black_pieces = self.iterate_cells_with_pieces(white = False)
+
+        game_score = []
+        
+        for piece in white_pieces:
+            game_score.append(piece.evaluate())
+        score = sum(game_score)
+
+        game_score = []                             #zwischen speicher
+
+        for piece in black_pieces:
+            game_score.append(piece.evaluate())
+        score -= sum(game_score)                    #opp_score - score
+
         return score
 
     def is_valid_cell(self, cell):
@@ -293,6 +332,13 @@ class Board(BoardBase):
         Don´t forget to handle the special case of "cell" being None. Return False in that case
         """
         # TODO: Implement
+        if cell and isinstance(cell, tuple) and len(cell) == 2:          #isinstance(cell, tuple) == "cell == tuple"
+            row, col = cell
+            
+            if row in range(8) and col in range(8):
+                return True
+        
+        return False
 
     def cell_is_valid_and_empty(self, cell):
         """
@@ -303,6 +349,12 @@ class Board(BoardBase):
         If so, use "get_cell()" to retrieve the piece placed on it and return True if there is None
         """
         # TODO: Implement
+        valid_cell = self.is_valid_cell(cell)
+        
+        if valid_cell and not self.get_cell(cell):
+            return True
+       
+        return False
 
     def piece_can_enter_cell(self, piece, cell):
         """
@@ -320,7 +372,14 @@ class Board(BoardBase):
         the given piece "white" attribute.
         """
         # TODO: Implement
- 
+        valid_cell = self.is_valid_cell(cell)
+        get_piece = self.get_cell(cell)
+        
+        if valid_cell:
+            if get_piece == None or get_piece.is_white() != piece.is_white():
+                return True
+        
+        return False
 
     def piece_can_hit_on_cell(self, piece, cell):
         """
@@ -338,3 +397,12 @@ class Board(BoardBase):
         the given piece "white" attribute.
         """
         # TODO: Implement
+        valid_cell = self.is_valid_cell(cell)
+        get_piece = self.get_cell(cell)
+
+        if valid_cell:
+            if get_piece != None:
+                if get_piece.is_white() != piece.is_white():
+                    return True
+        
+        return False
