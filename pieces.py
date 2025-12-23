@@ -120,6 +120,27 @@ class Piece:
         :return: Return True 
         """
         # TODO: Implement
+        reachable_cells = self.get_reachable_cells()
+        old_cell = self.cell
+        valid_cells = []
+
+        
+        for cell in reachable_cells:
+            enemy_piece = self.board.get_cell(cell)
+            self.board.set_cell(cell, self)
+            
+            king_checked = self.board.is_king_check_cached(self.is_white())
+
+            if king_checked == False:
+                valid_cells.append(cell)
+            
+            self.board.set_cell(old_cell, self)
+            
+            if enemy_piece:
+                self.board.set_cell(cell, enemy_piece)
+
+        return valid_cells
+
 
 class Pawn(Piece):  # Bauer
     def __init__(self, board, white):
@@ -169,6 +190,34 @@ class Rook(Piece):  # Turm
         :return: A list of reachable cells this rook could move into.
         """
         # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cells = []
+        directions = {(1, 0), (-1, 0), (0, 1), (0, -1)}
+
+        for dir in directions:
+            front_clear = True
+            row_dir, col_dir = dir
+            row, col = self.cell
+            
+            while front_clear:
+                row += row_dir
+                col += col_dir
+                new_position = (row, col)
+                
+                if self.board.cell_is_valid_and_empty(new_position):
+                    reachable_cells.append(new_position)
+                
+                elif self.board.cell_is_valid(new_position):
+                    piece = self.board.get_cell(new_position)
+                    
+                    if piece.is_white() == self.is_white():
+                        front_clear = False
+
+                    else:                                       #gegner ist hier
+                        reachable_cells.append(new_position)
+                        front_clear = False
+        
+        return reachable_cells
+
 
 
 class Knight(Piece):  # Springer
