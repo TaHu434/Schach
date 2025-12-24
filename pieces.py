@@ -206,7 +206,7 @@ class Rook(Piece):  # Turm
                 if self.board.cell_is_valid_and_empty(new_position):
                     reachable_cells.append(new_position)
                 
-                elif self.board.cell_is_valid(new_position):
+                elif self.board.is_valid_cell(new_position):
                     piece = self.board.get_cell(new_position)
                     
                     if piece.is_white() == self.is_white():
@@ -241,6 +241,33 @@ class Knight(Piece):  # Springer
         :return: A list of reachable cells this knight could move into.
         """
         # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cells = []
+        directions = {(2, 1), (2, -1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (1, -2), (-1, -2)}
+
+        for dir in directions:
+            front_clear = True
+            row_dir, col_dir = dir
+            row, col = self.cell
+            
+            while front_clear:
+                row += row_dir
+                col += col_dir
+                new_position = (row, col)
+                
+                if self.board.cell_is_valid_and_empty(new_position):
+                    reachable_cells.append(new_position)
+                
+                elif self.board.is_valid_cell(new_position):
+                    piece = self.board.get_cell(new_position)
+                    
+                    if piece.is_white() == self.is_white():
+                        front_clear = False
+
+                    else:                                       #gegner ist hier
+                        reachable_cells.append(new_position)
+                        front_clear = False
+        
+        return reachable_cells
 
 
 class Bishop(Piece):  # Läufer
@@ -263,6 +290,33 @@ class Bishop(Piece):  # Läufer
         :return: A list of reachable cells this bishop could move into.
         """
         # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cells = []
+        directions = {(1, 1), (-1, -1), (-1, 1), (1, -1)}
+
+        for dir in directions:
+            front_clear = True
+            row_dir, col_dir = dir
+            row, col = self.cell
+            
+            while front_clear:
+                row += row_dir
+                col += col_dir
+                new_position = (row, col)
+                
+                if self.board.cell_is_valid_and_empty(new_position):
+                    reachable_cells.append(new_position)
+                
+                elif self.board.is_valid_cell(new_position):
+                    piece = self.board.get_cell(new_position)
+                    
+                    if piece.is_white() == self.is_white():
+                        front_clear = False
+
+                    else:                                       #gegner ist hier
+                        reachable_cells.append(new_position)
+                        front_clear = False
+        
+        return reachable_cells
 
 
 class Queen(Piece):  # Königin
@@ -286,6 +340,33 @@ class Queen(Piece):  # Königin
         :return: A list of reachable cells this queen could move into.
         """
         # TODO: Implement a method that returns all cells this piece can enter in its next move
+        reachable_cells = []
+        directions = {(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (-1, 1), (1, -1)}
+
+        for dir in directions:
+            front_clear = True
+            row_dir, col_dir = dir
+            row, col = self.cell
+            
+            while front_clear:
+                row += row_dir
+                col += col_dir
+                new_position = (row, col)
+                
+                if self.board.cell_is_valid_and_empty(new_position):
+                    reachable_cells.append(new_position)
+                
+                elif self.board.is_valid_cell(new_position):
+                    piece = self.board.get_cell(new_position)
+                    
+                    if piece.is_white() == self.is_white():
+                        front_clear = False
+
+                    else:                                       #gegner ist hier
+                        reachable_cells.append(new_position)
+                        front_clear = False
+        
+        return reachable_cells
 
 
 class King(Piece):  # König
